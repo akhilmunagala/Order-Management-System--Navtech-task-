@@ -1,0 +1,225 @@
+<%- include('header'); -%>
+<div class="container">
+    <div class="addnew float-right">
+        <button class="btn btn-success" data-target="#newOrder" data-toggle="modal">New Order</button>
+    </div>
+    <% if(orders.length > 0){ %>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Order No</th>
+                <th>Due Date</th>
+                <th>Customer</th>
+                <th>Address</th>
+                <th>Phone</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for(var i = 0; i < orders.length; i++){ %>
+                <tr>
+                    <td><%= orders[i].orderNo %></td>
+                    <td><%= orders[i].dueDate %></td>
+                    <td><%= orders[i].customer %></td>
+                    <td><%= orders[i].address %></td>
+                    <td><%= orders[i].phone %></td>
+                    <td><%= orders[i].total %></td>
+                    <td><button class="btn btn-primary" data-toggle="modal" data-target="#editModal" data-id="<%= orders[i].orderNo %>">Edit</button></td>
+                    <td><button class="btn btn-danger" data-id="<%= orders[i].orderNo %>" data-toggle="modal" data-target="#confirmation">Delete</button></td>
+                </tr>
+            <%}%>
+        </tbody>
+    </table>
+    <% } else{ %>
+        <h2>No orders found</h2>
+    <% } %>
+</div>
+
+<!-- Button trigger modal -->
+<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    Launch demo modal
+  </button> -->
+  
+  <!-- create order Modal -->
+  <div class="modal fade" id="newOrder" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Create New Order</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form class="createOrder">
+                <div class="form-group">
+                    <label for="orderno">Order No</label>
+                    <input id="c-orderno" name="orderNo" type="text" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="duedate">Due Date</label>
+                    <input id="c-duedate" name="dueDate" type="text" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                <label for="customer">Customer</label>
+                <input id="c-customer" name="customer" type="text" class="form-control" required>
+                </div>
+                <div class="form-group">
+                <label for="address">Address</label>
+                <input id="c-address" type="text" name="address" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                <label for="phone">Phone</label>
+                <input id="c-phone" type="text" class="form-control" name="phone" required>
+                </div>
+                <div class="form-group">
+                <label for="total">Total</label>
+                <input id="c-total" type="number" class="form-control" name="total" required>
+                </div>
+                <button id="createOrder" class="btn btn-primary">Create Order</button>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- edit model -->
+  <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Edit Order</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form class="editForm">
+                <div class="form-group">
+                    <label for="orderno">Order No</label>
+                    <input id="orderno" type="text" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="duedate">Due Date</label>
+                    <input id="duedate" type="text" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                <label for="customer">Customer</label>
+                <input id="customer" type="text" class="form-control" required>
+                </div>
+                <div class="form-group">
+                <label for="address">Address</label>
+                <input id="address" type="text" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                <label for="phone">Phone</label>
+                <input id="phone" type="text" class="form-control" required>
+                </div>
+                <div class="form-group">
+                <label for="total">Total</label>
+                <input id="total" type="number" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation modal -->
+  <div id="confirmation" class="modal fade">
+        <div class="modal-dialog modal-confirm">
+            <div class="modal-content">
+                <div class="modal-header">				
+                    <h4 class="modal-title">Are you sure?</h4>	
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Do you really want to delete these records? This process cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger deleteOrder">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div> 
+
+  <script>
+      $(document).ready(function(){
+
+        $('#editModal').on('show.bs.modal', function(e){
+            console.log('modal event',e);
+            console.log('id', $(e.relatedTarget).attr('data-id'));
+            var id = $(e.relatedTarget).attr('data-id');
+            $('.editForm').attr('id',id);
+            $.get(`/order/${id}`, function(data){
+                console.log('data',data);
+                $('#orderno').val(data.orderNo);
+                $('#duedate').val(data.dueDate);
+                $('#customer').val(data.customer);
+                $('#address').val(data.address);
+                $('#phone').val(data.phone);
+                $('#total').val(data.total);
+            });
+        });
+
+        $('.editForm').submit(function(e){
+            e.preventDefault();
+            console.log('prevented edit form');
+            var obj = {
+                orderNo: $('#orderno').val(),
+                dueDate:$('#duedate').val(),
+                customer: $('#customer').val(),
+                address:  $('#address').val(),
+                phone: $('#phone').val(),
+                total: $('#total').val()
+            };
+            var id = $('.editForm').attr('id');
+            if(obj.orderNo != ''){
+                $.post(`/order/update/${id}`, obj, function(data){
+                    window.location.reload();
+                });
+            }
+        })
+      });
+
+      $('#createOrder').on('click', function(e){
+        console.log('create order');
+        var obj = {
+            orderNo: $('#c-orderno').val(),
+            dueDate:$('#c-duedate').val(),
+            customer: $('#c-customer').val(),
+            address:  $('#c-address').val(),
+            phone: $('#c-phone').val(),
+            total: $('#c-total').val()
+        };
+        if(obj.orderNo != ''){
+            $.post(`/order/create`, obj, function(data){
+                window.location.reload();
+            });
+        }
+      });
+
+      $('#confirmation').on('show.bs.modal', function(e){
+        var id = $(e.relatedTarget).attr('data-id');
+        $('.deleteOrder').attr('data-id',id);
+      });
+
+      $('.deleteOrder').on('click', function(e){
+          console.log('e',e);
+          console.log('id', $(e.currentTarget).attr('data-id'));
+          var id = $(e.currentTarget).attr('data-id');
+       
+        if(id != undefined){
+          $.get(`/order/delete/${id}`, function(data){
+            window.location.reload();
+          });
+        }
+      })
+  </script>
